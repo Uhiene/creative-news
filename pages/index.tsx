@@ -26,7 +26,6 @@ export default function Home() {
       </Head>
       <div className="container mx-auto">
         <Header/>
-
         <div className="mt-8">
           {newsData.map((news, index) => (
             <NewsPublication news={news} key={index} />
