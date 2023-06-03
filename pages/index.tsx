@@ -7,7 +7,7 @@ const newsData: News[] = [
   {
     title: 'Breaking News',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    date: 'May 30, 2023',
+    date: 'May 30, 2025',
   },
   {
     title: 'Latest Updates',
