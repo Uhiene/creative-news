@@ -25,7 +25,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="container mx-auto">
-        <Header/>
+        <Header />
         <div className="mt-8">
           {newsData.map((news, index) => (
             <NewsPublication news={news} key={index} />
