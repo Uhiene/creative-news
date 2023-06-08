@@ -1,5 +1,6 @@
 import Header from '@/components/Header'
 import { News } from '@/utils/interface'
+import axios from 'axios'
 import Head from 'next/head'
 import { ChangeEvent, FormEvent, useState } from 'react'
 
@@ -10,22 +11,22 @@ export default function Create() {
     date: '',
   })
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> ) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setNews({
       ...news,
       [e.target.name]: e.target.value,
     })
   }
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Handle form submission logic here
-    console.log(news)
-    // Reset form fields
-    setNews({
-      title: '',
-      description: '',
-      date: '',
+    await axios.post('/api/news/create', news).then((res) => {
+      console.log(res)
+      setNews({
+        title: '',
+        description: '',
+        date: '',
+      })
     })
   }
 

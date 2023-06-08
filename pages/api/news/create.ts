@@ -12,15 +12,18 @@ const client = new MongoClient(uri as string, {
 
 export default async function handler(req: any, res: any) {
     if (req.method !== "POST") {
-        res.status(405).json({message: "Method Not Allowed"})
-        return
+        return res.status(405).json({message: "Method Not Allowed"})
     }
 
     try {
         const {title, description} = req.body
         await client.connect() 
-        await client.db("news")
+        await client.db("Cluster0").collection("news").insertOne({title, description})
+        return res.status(200).json({message: "News created successfully"})
     } catch (error) {
-        
+        console.error("Error creating news: ", error)
+        return res.status(500).json({message: "Failed to create news"})
+    } finally {
+        await client.close()
     }
 }
