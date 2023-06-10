@@ -18,7 +18,7 @@ export default async function handler(req: any, res: any) {
     try {
         const {title, description} = req.body
         await client.connect() 
-        await client.db("Cluster0").collection("news").insertOne({title, description})
+        await client.db("Cluster0").collection("news").insertOne({title, description, timestamp: Date.now()})
         return res.status(200).json({message: "News created successfully"})
     } catch (error) {
         console.error("Error creating news: ", error)

@@ -3,13 +3,15 @@ import { News } from '@/utils/interface'
 import axios from 'axios'
 import Head from 'next/head'
 import { ChangeEvent, FormEvent, useState } from 'react'
+import { toast } from 'react-toastify';
 
 export default function Create() {
   const [news, setNews] = useState<News>({
     title: '',
     description: '',
-    date: '',
   })
+
+  const [creating, setCreating] = useState<Boolean>(false)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setNews({
@@ -20,13 +22,21 @@ export default function Create() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    await axios.post('/api/news/create', news).then((res) => {
+    setCreating(true)
+    await axios.post('/api/news/create', news)
+    .then((res) => {
       console.log(res)
       setNews({
         title: '',
         description: '',
-        date: '',
       })
+      setCreating(false)
+      toast.success("News Created Successfully")
+    })
+    .catch((error) => {
+      console.log(error)
+      setCreating(false)
+      toast.error("News Creation Failed")
     })
   }
 
@@ -70,27 +80,14 @@ export default function Create() {
                 required
               ></textarea>
             </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="date">
-                Date
-              </label>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="date"
-                type="text"
-                name="date"
-                value={news.date}
-                onChange={handleChange}
-                placeholder="Enter publication date"
-                required
-              />
-            </div>
+           
             <div className="flex items-center justify-center">
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 type="submit"
+                disabled={creating}
               >
-                Submit
+                {creating ? "Submitting..." : "Submit"}
               </button>
             </div>
           </form>
