@@ -9,6 +9,8 @@ export default function Create() {
   const [news, setNews] = useState<News>({
     title: '',
     description: '',
+    timestamp: '',
+    _id: '',
   })
 
   const [creating, setCreating] = useState<Boolean>(false)
@@ -29,6 +31,8 @@ export default function Create() {
       setNews({
         title: '',
         description: '',
+        timestamp: '',
+        _id: '',
       })
       setCreating(false)
       toast.success("News Created Successfully")

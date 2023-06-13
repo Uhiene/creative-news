@@ -1,0 +1,29 @@
+import { MongoClient, ObjectId, ServerApiVersion } from "mongodb"
+
+const uri: string | undefined = process.env.NEXT_APP_MONGODB
+
+const client = new MongoClient(uri as string, {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    }
+})
+
+export default async function handler(req: any, res: any) {
+    if (req.method !== "DELETE") {
+        return res.status(405).json({message: "Method Not Allowed"})
+    }
+
+    try {
+        const { _id } = req.body
+        await client.connect() 
+        await client.db("Cluster0").collection("news").deleteOne({ _id: new ObjectId( _id ) })
+        return res.status(200).json({message: "News deleted successfully"})
+    } catch (error) {
+        console.error("Error deleting news: ", error)
+        return res.status(500).json({message: "Failed to delete news"})
+    } finally {
+        await client.close()
+    }
+}

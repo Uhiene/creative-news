@@ -1,5 +1,6 @@
 export interface News {
   title: string
   description: string
-  date: string
+  timestamp: string
+  _id: string
 }
