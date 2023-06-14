@@ -2,6 +2,7 @@ import React from 'react'
 import { News } from '@/utils/interface'
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import Link from 'next/link';
 
 const NewsPublication = ({news}: {news: News} ) => {
   const formatDate = (timestamp: string) => {
@@ -31,7 +32,7 @@ const NewsPublication = ({news}: {news: News} ) => {
       </div>
       <div className="flex justify-between items-center w-1/6">
         <button className="bg-black text-white px-4 py-2 rounded-md" onClick={() => deleteNews( news )}>Delete</button>
-        <button className="bg-black text-white px-4 py-2 rounded-md">Edit</button>
+        <Link href={"/edit/" + news._id} className="bg-black text-white px-4 py-2 rounded-md">Edit</Link>
       </div>
     </div>
   )
