@@ -3,10 +3,13 @@ import { News } from '@/utils/interface'
 import axios from 'axios'
 import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
-import { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useState, useEffect } from 'react'
 import { toast } from 'react-toastify';
+import {useRouter} from 'next/router'
 
-export default function Edit({newsData}: {newsData: News}) {
+export default function Edit() {
+  const router = useRouter()
+  const {id} = router.query
   const [news, setNews] = useState<News>({
     title: '',
     description: '',
@@ -14,7 +17,24 @@ export default function Edit({newsData}: {newsData: News}) {
     _id: '',
   })
 
-  console.log(newsData)
+  const showNews = async (id: string) => {
+    try {
+      const response = await axios.get(`/api/news/show?_id=${id}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+  
+  useEffect(() => {
+    const loadData = async() => {
+      const newsData: News = await showNews(id)
+      setNews(newsData)
+    }
+    if (typeof window !== 'undefined' && router.isReady ) {
+      loadData() 
+    }
+  }, [id, router.isReady]) 
 
   const [creating, setCreating] = useState<Boolean>(false)
 
@@ -28,7 +48,7 @@ export default function Edit({newsData}: {newsData: News}) {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setCreating(true)
-    await axios.post('/api/news/create', news)
+    await axios.post('/api/news/update', news)
     .then((res) => {
       console.log(res)
       setNews({
@@ -38,12 +58,12 @@ export default function Edit({newsData}: {newsData: News}) {
         _id: '',
       })
       setCreating(false)
-      toast.success("News Created Successfully")
+      toast.success("News Updated Successfully")
     })
     .catch((error) => {
       console.log(error)
       setCreating(false)
-      toast.error("News Creation Failed")
+      toast.error("News Updating Failed")
     })
   }
 
@@ -102,25 +122,4 @@ export default function Edit({newsData}: {newsData: News}) {
       </div>
     </div>
   )
-}
-
-const showNews = async(id: string) => {
-  return new Promise(async(resolve,reject) => {
-  try {
-    const newsData = await axios.get(`/api/news/show?_id=${id}`)
-    resolve(newsData.data)
-  } catch (error) {
-    reject(error)
-  }    
-  } )
-}
-
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const {id} = context.query
-  const news = await showNews(id as string)
-  return{
-    props: {
-      newsData: JSON.parse(JSON.stringify(news))
-    }
-  }
 }
