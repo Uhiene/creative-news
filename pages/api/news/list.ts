@@ -17,7 +17,7 @@ export default async function handler(req: any, res: any) {
 
     try {
         await client.connect() 
-        const newsCollection = await client.db("Cluster0").collection("news")
+        const newsCollection = client.db("Cluster0").collection("news")
         const news = await newsCollection.find({}).toArray()
         return res.status(200).json(news)
     } catch (error) {

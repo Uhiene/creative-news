@@ -1,7 +1,6 @@
 import Header from '@/components/Header'
-import { News } from '@/utils/interface'
+import { News, showNews } from '@/utils/interface'
 import axios from 'axios'
-import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import { ChangeEvent, FormEvent, useState, useEffect } from 'react'
 import { toast } from 'react-toastify';
@@ -16,19 +15,10 @@ export default function Edit() {
     timestamp: '',
     _id: '',
   })
-
-  const showNews = async (id: string) => {
-    try {
-      const response = await axios.get(`/api/news/show?_id=${id}`);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  };
   
   useEffect(() => {
     const loadData = async() => {
-      const newsData: News = await showNews(id)
+      const newsData: News = await showNews(id as string)
       setNews(newsData)
     }
     if (typeof window !== 'undefined' && router.isReady ) {
@@ -36,7 +26,7 @@ export default function Edit() {
     }
   }, [id, router.isReady]) 
 
-  const [creating, setCreating] = useState<Boolean>(false)
+  const [updating, setUpdating] = useState<boolean>(false)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setNews({
@@ -47,22 +37,18 @@ export default function Edit() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setCreating(true)
+    setUpdating(true)
     await axios.post('/api/news/update', news)
     .then((res) => {
       console.log(res)
-      setNews({
-        title: '',
-        description: '',
-        timestamp: '',
-        _id: '',
-      })
-      setCreating(false)
+      
+      setUpdating(false)
       toast.success("News Updated Successfully")
+      router.push("/")
     })
     .catch((error) => {
       console.log(error)
-      setCreating(false)
+      setUpdating(false)
       toast.error("News Updating Failed")
     })
   }
@@ -112,9 +98,9 @@ export default function Edit() {
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 type="submit"
-                disabled={creating}
+                disabled={updating}
               >
-                {creating ? "Submitting..." : "Submit"}
+                {updating ? "Updating..." : "Update"}
               </button>
             </div>
           </form>

@@ -17,10 +17,9 @@ export default async function handler(req: any, res: any) {
 
     try {
         const { _id } = req.query
-        console.log("_id=", _id)
         await client.connect() 
-        const newsCollection = await client.db("Cluster0").collection("news")
-        const news = await newsCollection.findOne({_id: ObjectId(_id)})
+        const newsCollection = client.db("Cluster0").collection("news")
+        const news = await newsCollection.findOne({_id: new ObjectId(_id)})
         if (!news) {
             return res.status(404).json({message: "News not found"}) 
         }
