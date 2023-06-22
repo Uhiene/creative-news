@@ -4,6 +4,7 @@ import { News } from '@/utils/interface'
 import Head from 'next/head'
 import {useEffect, useState} from "react"
 import axios from 'axios'
+import Search from '@/components/Search'
 
 export default function Home() {
   const [news, setNews] = useState<News[]>([])
@@ -34,6 +35,7 @@ export default function Home() {
       </Head>
       <div className="container mx-auto">
         <Header />
+        <Search/>
         <div className="mt-8">
           {news.map((news, index) => (
             <NewsPublication news={news} key={index} />

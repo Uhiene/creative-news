@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-const NewsPublication: React.FC = ({ news }: { news: News }) => {
+const NewsPublication: React.FC<{ news: News }> = ({ news }) => {
   const router = useRouter()
   const deleteNews = async (selectedNews: News) => {
     await axios
