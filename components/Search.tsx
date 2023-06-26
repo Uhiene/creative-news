@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
+import { News, searchNews } from '@/utils/interface'
+import Link from 'next/link'
+import React, { useState } from 'react'
 
 const Search: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('')
+  const [result, setResult] = useState<News[]>([])
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
+    setSearchTerm(event.target.value)
+  }
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Perform search logic with the search term
-    console.log('Search term:', searchTerm);
-  };
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault()
+    const response = await searchNews(searchTerm)
+    setResult(response as News[])
+  }
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex flex-col items-center justify-center">
       <form onSubmit={handleSubmit} className="flex items-center">
         <input
           type="text"
@@ -30,8 +33,17 @@ const Search: React.FC = () => {
           Search
         </button>
       </form>
+    {result.length > 0 && (
+        <ul className="mt-4 bg-gray-100 p-4 rounded-md">
+        {result.map((news, i) => (
+          <li key={i} className="mb-2">
+            <Link href={'/news/' + news._id}>{news.title}</Link>
+          </li>
+        ))}
+      </ul>
+    )}
     </div>
-  );
-};
+  )
+}
 
-export default Search;
+export default Search

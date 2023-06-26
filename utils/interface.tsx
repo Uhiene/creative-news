@@ -21,3 +21,12 @@ export const showNews = async (id: string) => {
     throw error
   }
 }
+
+export const searchNews = async (searchQuery: string) => {
+  try {
+    const response = await axios.get(`/api/news/search?searchQuery=${searchQuery}`)
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
